@@ -211,9 +211,9 @@ void WindowSizePlugin::HandleMethodCall(
 
       // Add device information to the map
       deviceInfo[EncodableValue("deviceName")] =
-          EncodableValue(WideStringToUtf8(deviceName));
+          EncodableValue(deviceName);
       deviceInfo[EncodableValue("deviceDescription")] =
-          EncodableValue(WideStringToUtf8(deviceDescription));
+          EncodableValue(deviceDescription);
 
       // Determine if the display device is virtual (for example, based on the
       // description or name)
@@ -298,10 +298,10 @@ void WindowSizePlugin::HandleMethodCall(
   }
 }
 
-std::string WideStringToUtf8(const std::wstring& wideStr) {
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
-    return converter.to_bytes(wideStr);
-}
+// std::string WideStringToUtf8(const std::wstring& wideStr) {
+//     std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+//     return converter.to_bytes(wideStr);
+// }
 
 std::optional<LRESULT> WindowSizePlugin::HandleWindowProc(HWND hwnd,
                                                           UINT message,
