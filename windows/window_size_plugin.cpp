@@ -192,7 +192,7 @@ void WindowSizePlugin::HandleMethodCall(
     result->Success(screens);
   }
 
-  if (method_call.method_name().compare(kGetScreenDeviceMethod) == 0) {
+  if (method_call.method_name().compare(kGetDeviceListMethod) == 0) {
     std::vector<EncodableMap> displayDevicesList;
 
     DISPLAY_DEVICE displayDevice;
