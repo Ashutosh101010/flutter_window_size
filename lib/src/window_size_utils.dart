@@ -26,6 +26,10 @@ Future<List<Screen>> getScreenList() async {
   return await WindowSizeChannel.instance.getScreenList();
 }
 
+Future<List<Map>> getDeviceList() async {
+  return await WindowSizeChannel.instance.getDeviceList();
+}
+
 /// Returns the [Screen] showing the window that contains this Flutter instance.
 ///
 /// If the window is not being displayed, returns null. If the window is being
