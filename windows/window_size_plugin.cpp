@@ -25,6 +25,9 @@
 #include <optional>
 #include <sstream>
 
+#include <string>
+#include <codecvt> 
+
 namespace {
 
 using flutter::EncodableList;
