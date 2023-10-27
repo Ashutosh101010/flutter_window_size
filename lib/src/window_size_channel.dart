@@ -26,6 +26,7 @@ const String _windowSizeChannelName = 'flutter/windowsize';
 ///
 /// Returns a list of screen info maps; see keys below.
 const String _getScreenListMethod = 'getScreenList';
+const String _getDeviceListMethod = 'getDeviceList';
 
 /// The method name to request information about the window containing the
 /// Flutter instance.
@@ -135,6 +136,15 @@ class WindowSizeChannel {
 
     for (final screenInfo in response) {
       screenList.add(_screenFromInfoMap(screenInfo));
+    }
+    return screenList;
+  }
+  Future<List<Map>> getDeviceList() async {
+    final screenList = <Map>[];
+    final response = await _platformChannel.invokeMethod(_getDeviceListMethod);
+
+    for (final object in response) {
+      screenList.add(object);
     }
     return screenList;
   }

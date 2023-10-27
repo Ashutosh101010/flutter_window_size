@@ -40,6 +40,7 @@ const char kSetWindowMinimumSize[] = "setWindowMinimumSize";
 const char kSetWindowMaximumSize[] = "setWindowMaximumSize";
 const char kSetWindowTitleMethod[] = "setWindowTitle";
 const char ksetWindowVisibilityMethod[] = "setWindowVisibility";
+const char kGetDeviceListMethod[] = "getDeviceList";
 const char kFrameKey[] = "frame";
 const char kVisibleFrameKey[] = "visibleFrame";
 const char kScaleFactorKey[] = "scaleFactor";
@@ -189,7 +190,51 @@ void WindowSizePlugin::HandleMethodCall(
     ::EnumDisplayMonitors(nullptr, nullptr, MonitorRepresentationEnumProc,
                           reinterpret_cast<LPARAM>(&screens));
     result->Success(screens);
-  } else if (method_call.method_name().compare(kGetWindowInfoMethod) == 0) {
+  }
+
+  if (method_call.method_name().compare(kGetScreenDeviceMethod) == 0) {
+    std::vector<EncodableMap> displayDevicesList;
+
+    DISPLAY_DEVICE displayDevice;
+    displayDevice.cb = sizeof(DISPLAY_DEVICE);
+    int deviceIndex = 0;
+
+    while (EnumDisplayDevices(nullptr, deviceIndex, &displayDevice, 0)) {
+      EncodableMap deviceInfo;
+
+      // Extract information about the display device
+      const std::wstring deviceName(displayDevice.DeviceName);
+      const std::wstring deviceDescription(displayDevice.DeviceString);
+
+      // Add device information to the map
+      deviceInfo[EncodableValue("deviceName")] =
+          EncodableValue(WideStringToUtf8(deviceName));
+      deviceInfo[EncodableValue("deviceDescription")] =
+          EncodableValue(WideStringToUtf8(deviceDescription));
+
+      // Determine if the display device is virtual (for example, based on the
+      // description or name)
+      bool isVirtual = false;
+      if (displayDevice.Flags & DISPLAY_DEVICE_VIRTUAL) {
+        isVirtual = true;
+      }
+
+      // Add the boolean field indicating if the device is virtual
+      deviceInfo[EncodableValue("isVirtual")] = EncodableValue(isVirtual);
+
+      // Add the device info map to the list
+      displayDevicesList.push_back(deviceInfo);
+
+      // Increment the device index to continue enumeration
+      deviceIndex++;
+      displayDevice.cb = sizeof(DISPLAY_DEVICE);
+    }
+
+    // Return the list of display devices with the boolean field
+    result->Success(EncodableValue(displayDevicesList));
+  }
+
+  else if (method_call.method_name().compare(kGetWindowInfoMethod) == 0) {
     result->Success(GetPlatformChannelRepresentationForWindow(
         GetRootWindow(registrar_->GetView())));
   } else if (method_call.method_name().compare(kSetWindowFrameMethod) == 0) {
