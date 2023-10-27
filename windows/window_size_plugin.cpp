@@ -295,6 +295,11 @@ void WindowSizePlugin::HandleMethodCall(
   }
 }
 
+std::string WideStringToUtf8(const std::wstring& wideStr) {
+    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+    return converter.to_bytes(wideStr);
+}
+
 std::optional<LRESULT> WindowSizePlugin::HandleWindowProc(HWND hwnd,
                                                           UINT message,
                                                           WPARAM wparam,
